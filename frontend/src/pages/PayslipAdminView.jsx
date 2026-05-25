@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { Search, CreditCard, ChevronRight } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -32,10 +32,7 @@ const PayslipAdminView = () => {
 
   const fetchEmployees = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/auth/employees', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/auth/employees');
       if (res.data.success) {
         setEmployees(res.data.employees);
       }
@@ -65,7 +62,7 @@ const PayslipAdminView = () => {
     if (!selectedEmployee) return alert("Please select an employee");
 
     const basic = formData.earnings.basic || 0;
-    
+
     const finalEarnings = {
       basic: basic,
       hra: (basic * (formData.earnings.hra || 0)) / 100,
@@ -80,14 +77,11 @@ const PayslipAdminView = () => {
     };
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post('/api/payslips/add', {
+      const res = await api.post('/api/payslips/add', {
         ...formData,
         earnings: finalEarnings,
         deductions: finalDeductions,
         employeeId: selectedEmployee.id || selectedEmployee._id
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (res.data.success) {
@@ -135,9 +129,9 @@ const PayslipAdminView = () => {
           <div className="px-4 py-3">
             <div className="relative">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search employees..." 
+              <input
+                type="text"
+                placeholder="Search employees..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all"
@@ -146,14 +140,13 @@ const PayslipAdminView = () => {
           </div>
           <ul className="divide-y divide-slate-100 dark:divide-slate-700 max-h-[400px] overflow-y-auto">
             {filteredEmployees.map(emp => (
-              <li 
-                key={emp.id || emp._id} 
+              <li
+                key={emp.id || emp._id}
                 onClick={() => setSelectedEmployee(emp)}
-                className={`flex items-center justify-between px-5 py-3 cursor-pointer transition-colors ${
-                  (selectedEmployee?.id || selectedEmployee?._id) === (emp.id || emp._id) 
-                    ? 'bg-sky-50 dark:bg-sky-900/20 border-l-[3px] border-l-sky-500' 
+                className={`flex items-center justify-between px-5 py-3 cursor-pointer transition-colors ${(selectedEmployee?.id || selectedEmployee?._id) === (emp.id || emp._id)
+                    ? 'bg-sky-50 dark:bg-sky-900/20 border-l-[3px] border-l-sky-500'
                     : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 border-l-[3px] border-l-transparent'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 flex items-center justify-center text-sm font-semibold flex-shrink-0">
@@ -177,7 +170,7 @@ const PayslipAdminView = () => {
               <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">
                 Salary Details for {selectedEmployee.name}
               </h3>
-              
+
               {message && (
                 <div className="px-4 py-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-sm font-medium mb-6">
                   {message}
@@ -187,8 +180,8 @@ const PayslipAdminView = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 <div>
                   <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">Month</label>
-                  <select 
-                    value={formData.month} 
+                  <select
+                    value={formData.month}
                     onChange={(e) => handleInputChange('main', 'month', e.target.value)}
                     className="input-field"
                   >
@@ -197,9 +190,9 @@ const PayslipAdminView = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">Year</label>
-                  <input 
-                    type="number" 
-                    value={formData.year} 
+                  <input
+                    type="number"
+                    value={formData.year}
                     onChange={(e) => handleInputChange('main', 'year', e.target.value)}
                     className="input-field"
                   />
@@ -218,9 +211,9 @@ const PayslipAdminView = () => {
                         {field.replace(/([A-Z])/g, ' $1').toUpperCase()} {field !== 'basic' && '(%)'}
                       </label>
                       <div className="flex gap-2 items-center">
-                        <input 
-                          type="number" 
-                          value={formData.earnings[field]} 
+                        <input
+                          type="number"
+                          value={formData.earnings[field]}
                           onChange={(e) => handleInputChange('earnings', field, e.target.value)}
                           className="input-field flex-1"
                           placeholder={field !== 'basic' ? "Enter %" : "Enter amount"}
@@ -246,9 +239,9 @@ const PayslipAdminView = () => {
                         {field.replace(/([A-Z])/g, ' $1').toUpperCase()} (%)
                       </label>
                       <div className="flex gap-2 items-center">
-                        <input 
-                          type="number" 
-                          value={formData.deductions[field]} 
+                        <input
+                          type="number"
+                          value={formData.deductions[field]}
                           onChange={(e) => handleInputChange('deductions', field, e.target.value)}
                           className="input-field flex-1"
                           placeholder="Enter %"
@@ -262,8 +255,8 @@ const PayslipAdminView = () => {
                 </div>
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn-primary w-full mt-8"
               >
                 Create Payslip

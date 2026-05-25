@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { Search, Calendar as CalendarIcon, UserCheck, UserMinus, Clock } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -23,10 +23,7 @@ const AttendanceAdminView = () => {
 
   const fetchEmployees = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/auth/employees', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/auth/employees');
       if (res.data.success) {
         setEmployees(res.data.employees);
       }
@@ -41,15 +38,12 @@ const AttendanceAdminView = () => {
     if (!selectedEmployee) return alert("Please select an employee");
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post('/api/attendance/mark', {
+      const res = await api.post('/api/attendance/mark', {
         employeeId: selectedEmployee.id || selectedEmployee._id,
         date: attendanceData.date,
         status: status,
         shift: attendanceData.shift,
         workHours: attendanceData.workHours
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (res.data.success) {
@@ -98,8 +92,8 @@ const AttendanceAdminView = () => {
                 key={emp.id || emp._id}
                 onClick={() => setSelectedEmployee(emp)}
                 className={`flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors ${(selectedEmployee?.id || selectedEmployee?._id) === (emp.id || emp._id)
-                    ? 'bg-sky-50 dark:bg-sky-900/20 border-l-[3px] border-l-sky-500'
-                    : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 border-l-[3px] border-l-transparent'
+                  ? 'bg-sky-50 dark:bg-sky-900/20 border-l-[3px] border-l-sky-500'
+                  : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 border-l-[3px] border-l-transparent'
                   }`}
               >
                 <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 flex items-center justify-center text-sm font-semibold flex-shrink-0">

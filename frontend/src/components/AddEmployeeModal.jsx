@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { X, UserPlus, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -25,14 +25,7 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
     setMessage({ type: '', text: '' });
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        '/api/auth/register-employee',
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const response = await api.post('/api/auth/register-employee', formData);
 
       if (response.data.success) {
         setMessage({ type: 'success', text: 'Employee created successfully!' });
@@ -44,9 +37,9 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error(error);
-      setMessage({ 
-        type: 'error', 
-        text: error.response?.data?.message || 'Failed to create employee' 
+      setMessage({
+        type: 'error',
+        text: error.response?.data?.message || 'Failed to create employee'
       });
     } finally {
       setLoading(false);
@@ -56,22 +49,22 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center">
       {/* Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-white/85 dark:bg-slate-900/85 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md mx-4 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
           <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
             <UserPlus size={20} className="text-sky-500" />
             Add New Employee
           </h3>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             type="button"
             className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
@@ -82,14 +75,13 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit}>
           {/* Body */}
           <div className="px-6 py-5 space-y-4">
-            
+
             {/* Message */}
             {message.text && (
-              <div className={`px-4 py-3 rounded-lg text-sm font-medium ${
-                message.type === 'success' 
-                  ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' 
+              <div className={`px-4 py-3 rounded-lg text-sm font-medium ${message.type === 'success'
+                  ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
                   : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800'
-              }`}>
+                }`}>
                 {message.text}
               </div>
             )}
@@ -101,7 +93,7 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
               </label>
               <div className="relative">
                 <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input 
+                <input
                   type="text"
                   name="name"
                   required
@@ -120,7 +112,7 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
               </label>
               <div className="relative">
                 <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input 
+                <input
                   type="email"
                   name="email"
                   required
@@ -139,7 +131,7 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
               </label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input 
+                <input
                   type="password"
                   name="password"
                   required
@@ -154,16 +146,16 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
 
           {/* Footer */}
           <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               disabled={loading}
               className="px-5 py-2.5 text-sm font-medium rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="px-5 py-2.5 text-sm font-semibold rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition-colors disabled:opacity-50 flex items-center gap-2"
             >

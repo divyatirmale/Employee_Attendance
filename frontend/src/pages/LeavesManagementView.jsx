@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useTheme } from '../context/ThemeContext';
 import { Check, X, Calendar, User, Loader2 } from 'lucide-react';
 
@@ -14,10 +14,7 @@ const LeavesManagementView = () => {
 
     const fetchLeaves = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('/api/leaves', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/api/leaves');
             if (res.data.success) {
                 setLeaves(res.data.leaves);
             }
@@ -30,10 +27,7 @@ const LeavesManagementView = () => {
 
     const updateStatus = async (id, status) => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.put(`/api/leaves/${id}`, { status }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.put(`/api/leaves/${id}`, { status });
             if (res.data.success) {
                 fetchLeaves();
             }

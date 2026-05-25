@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useTheme } from '../context/ThemeContext';
 import { Search, User, Mail, Calendar, MapPin, Star, Filter, Loader2 } from 'lucide-react';
 
@@ -17,10 +17,7 @@ const PeopleView = () => {
 
   const fetchEmployees = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/auth/employees', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/auth/employees');
       if (res.data.success) {
         setEmployees(res.data.employees);
         if (res.data.employees.length > 0) {
@@ -64,15 +61,15 @@ const PeopleView = () => {
             <button
               onClick={() => setActiveTab('Starred')}
               className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'Starred'
-                  ? 'text-sky-600 border-b-2 border-sky-600 dark:text-sky-400 dark:border-sky-400'
-                  : `${dark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'}`
+                ? 'text-sky-600 border-b-2 border-sky-600 dark:text-sky-400 dark:border-sky-400'
+                : `${dark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'}`
                 }`}
             >Starred</button>
             <button
               onClick={() => setActiveTab('Everyone')}
               className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === 'Everyone'
-                  ? 'text-sky-600 border-b-2 border-sky-600 dark:text-sky-400 dark:border-sky-400'
-                  : `${dark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'}`
+                ? 'text-sky-600 border-b-2 border-sky-600 dark:text-sky-400 dark:border-sky-400'
+                : `${dark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-600'}`
                 }`}
             >Everyone</button>
           </div>
@@ -100,8 +97,8 @@ const PeopleView = () => {
                     key={emp.id || emp._id}
                     onClick={() => setSelectedEmployee(emp)}
                     className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${isActive
-                        ? `${dark ? 'bg-sky-900/30 border-l-2 border-sky-500' : 'bg-sky-50 border-l-2 border-sky-500'}`
-                        : `${dark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} border-l-2 border-transparent`
+                      ? `${dark ? 'bg-sky-900/30 border-l-2 border-sky-500' : 'bg-sky-50 border-l-2 border-sky-500'}`
+                      : `${dark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} border-l-2 border-transparent`
                       }`}
                   >
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${dark ? 'bg-gray-600 text-gray-200' : 'bg-sky-100 text-sky-700'

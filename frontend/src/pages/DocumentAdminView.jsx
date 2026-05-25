@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { Search, Upload, FileText, Trash2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -27,10 +27,7 @@ const DocumentAdminView = () => {
 
   const fetchEmployees = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/auth/employees', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/auth/employees');
       if (res.data.success) {
         setEmployees(res.data.employees);
       }
@@ -43,10 +40,7 @@ const DocumentAdminView = () => {
 
   const fetchEmployeeDocuments = async (empId) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`/api/documents/${empId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/api/documents/${empId}`);
       if (res.data.success) setDocuments(res.data.documents);
     } catch (error) {
       console.error(error);
@@ -58,12 +52,9 @@ const DocumentAdminView = () => {
     if (!selectedEmployee) return alert("Please select an employee");
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post('/api/documents/upload', {
+      const res = await api.post('/api/documents/upload', {
         employeeId: selectedEmployee.id || selectedEmployee._id,
         ...formData
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (res.data.success) {
@@ -81,10 +72,7 @@ const DocumentAdminView = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this document?")) return;
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`/api/documents/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/api/documents/${id}`);
       fetchEmployeeDocuments(selectedEmployee.id || selectedEmployee._id);
     } catch (error) {
       console.error(error);

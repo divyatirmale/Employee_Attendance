@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
 import { FileText, CreditCard, Eye, Download, Search, Loader2, ArrowLeft, FolderOpen } from 'lucide-react';
@@ -21,10 +21,7 @@ const DocumentCenterView = () => {
     const fetchDocuments = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`/api/documents/${user.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get(`/api/documents/${user.id}`);
             if (res.data.success) setDocuments(res.data.documents);
         } catch (error) {
             console.error(error);
@@ -36,10 +33,7 @@ const DocumentCenterView = () => {
     const fetchPayslips = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`/api/payslips/employee/${user.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get(`/api/payslips/employee/${user.id}`);
             if (res.data.success) setPayslips(res.data.payslips);
         } catch (error) {
             console.error(error);

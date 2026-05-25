@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useTheme } from '../context/ThemeContext';
 import { Calendar, Info, X, Loader2, Clock, CheckCircle, XCircle } from 'lucide-react';
 
@@ -23,10 +23,7 @@ const LeaveApplyView = () => {
 
     const fetchLeaves = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('/api/leaves', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/api/leaves');
             if (res.data.success) {
                 setLeaves(res.data.leaves);
             }
@@ -50,10 +47,7 @@ const LeaveApplyView = () => {
 
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.post('/api/leaves/apply', leaveData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.post('/api/leaves/apply', leaveData);
             if (res.data.success) {
                 setMsg(res.data.message);
                 setLeaveData({ leaveType: '', fromDate: '', toDate: '', reason: '' });

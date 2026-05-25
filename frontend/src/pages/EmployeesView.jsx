@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { Mail, Calendar, UserCheck, Loader2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -12,10 +12,7 @@ const EmployeesView = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/auth/employees', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/api/auth/employees');
 
         if (response.data.success) {
           setEmployees(response.data.employees);

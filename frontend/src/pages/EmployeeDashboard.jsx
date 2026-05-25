@@ -18,7 +18,7 @@ import {
   FileText, Users, HelpCircle, Bell, Search, Settings, Sun,
   ChevronDown, ChevronUp, LogOut, Menu, X, Moon, Coffee, ArrowRight
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/axios';
 
 const EmployeeDashboard = () => {
   const { user, logout } = useAuth();
@@ -40,10 +40,7 @@ const EmployeeDashboard = () => {
 
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/tasks', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/tasks');
       if (res.data.success) setTasks(res.data.tasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);

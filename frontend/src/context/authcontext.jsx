@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import axios from "axios";
+import api from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
@@ -20,19 +20,12 @@ const AuthContext = ({ children }) => {
           return;
         }
 
-        const response = await axios.get(
-          "/api/auth/verify",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // ✅ IMPORTANT
-            },
-          }
-        );
+        const response = await api.get("/api/auth/verify");
 
         if (response.data.success) {
           setUser(response.data.user);
         }
-      
+
       } catch (error) {
         console.error(error);
         localStorage.removeItem("token");

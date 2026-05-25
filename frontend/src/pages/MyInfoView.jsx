@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
 import { User, MapPin, Briefcase, GraduationCap, Loader2 } from 'lucide-react';
@@ -17,10 +17,7 @@ const MyInfoView = ({ employeeId }) => {
 
   const fetchInfo = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`/api/employee-info/${idToFetch}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/api/employee-info/${idToFetch}`);
       if (res.data.success) {
         setInfo(res.data.info);
       }

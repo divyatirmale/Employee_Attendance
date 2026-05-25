@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
 import AddEmployeeModal from '../components/AddEmployeeModal';
@@ -12,7 +12,7 @@ import EmployeeInfoAdminView from './EmployeeInfoAdminView';
 import AttendanceAdminView from './AttendanceAdminView';
 import DocumentAdminView from './DocumentAdminView';
 import AdminManagementView from './AdminManagementView';
-import { 
+import {
   Users, Calendar, Clock, CheckSquare, CreditCard,
   PieChart, Bell, Search, LogOut, ShieldCheck, FileText,
   HelpCircle, MessageSquare, Shield, Menu, X, Sun, Moon,
@@ -44,10 +44,7 @@ const AdminDashboard = () => {
 
   const fetchTickets = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/tickets', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/tickets');
       if (res.data.success) setTickets(res.data.tickets);
     } catch (error) {
       console.error("Error fetching tickets:", error);
@@ -56,10 +53,7 @@ const AdminDashboard = () => {
 
   const fetchLeaves = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/leaves', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/leaves');
       if (res.data.success) setLeaves(res.data.leaves);
     } catch (error) {
       console.error("Error fetching leaves:", error);
@@ -68,10 +62,7 @@ const AdminDashboard = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.put(`/api/leaves/${id}`, { status }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.put(`/api/leaves/${id}`, { status });
       if (res.data.success) fetchLeaves();
     } catch (error) {
       console.error("Error updating leave status:", error);
@@ -80,10 +71,7 @@ const AdminDashboard = () => {
 
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/tasks', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/tasks');
       if (res.data.success) setTasks(res.data.tasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -120,10 +108,10 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen bg-surface dark:bg-slate-900 overflow-hidden">
-      
+
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-20 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -140,7 +128,7 @@ const AdminDashboard = () => {
           <ShieldCheck size={28} className="text-primary-400" />
           <span className="text-xl font-bold text-white tracking-wide">WorkLogix</span>
         </div>
-        
+
         {/* Profile */}
         <div className="px-5 py-4 flex items-center gap-3 border-b border-white/10">
           <div className="w-11 h-11 rounded-full bg-primary-500/20 text-primary-300 flex items-center justify-center font-semibold text-lg border-2 border-primary-500/30">
@@ -189,7 +177,7 @@ const AdminDashboard = () => {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        
+
         {/* HEADER */}
         <header className="h-16 bg-white dark:bg-slate-800 border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0 shadow-sm">
           <div className="flex items-center gap-3">
@@ -203,7 +191,7 @@ const AdminDashboard = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <button 
+            <button
               onClick={() => setIsAddEmployeeOpen(true)}
               className="hidden sm:flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
             >
@@ -211,13 +199,13 @@ const AdminDashboard = () => {
               <span className="hidden md:inline">Add Employee</span>
             </button>
             {/* Mobile add button */}
-            <button 
+            <button
               onClick={() => setIsAddEmployeeOpen(true)}
               className="sm:hidden p-2 bg-sky-600 text-white rounded-lg"
             >
               <UserPlus size={18} />
             </button>
-            <button 
+            <button
               onClick={logout}
               className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
             >
@@ -278,12 +266,12 @@ const AdminDashboard = () => {
 
               {/* MANAGEMENT PANELS */}
               <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
-                
+
                 {/* Helpdesk */}
                 <div className="card p-5 md:p-6">
                   <div className="flex items-center justify-between mb-5">
                     <h3 className="text-base md:text-lg font-semibold text-slate-800 dark:text-white">Recent Helpdesk Requests</h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('Helpdesk')}
                       className="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium"
                     >
@@ -303,13 +291,12 @@ const AdminDashboard = () => {
                               <p className="text-xs text-slate-500 dark:text-slate-400">{ticket.employeeId?.name} • {ticket.category}</p>
                             </div>
                           </div>
-                          <span className={`badge text-[10px] px-2 py-0.5 ${
-                            (ticket.priority || 'Medium').toLowerCase() === 'high' 
-                              ? 'badge-rejected' 
+                          <span className={`badge text-[10px] px-2 py-0.5 ${(ticket.priority || 'Medium').toLowerCase() === 'high'
+                              ? 'badge-rejected'
                               : (ticket.priority || 'Medium').toLowerCase() === 'low'
-                              ? 'badge-approved'
-                              : 'badge-pending'
-                          }`}>
+                                ? 'badge-approved'
+                                : 'badge-pending'
+                            }`}>
                             {ticket.priority || 'Medium'}
                           </span>
                         </div>
@@ -327,7 +314,7 @@ const AdminDashboard = () => {
                 <div className="card p-5 md:p-6">
                   <div className="flex items-center justify-between mb-5">
                     <h3 className="text-base md:text-lg font-semibold text-slate-800 dark:text-white">Recent Leave Requests</h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('Leave Requests')}
                       className="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium"
                     >
@@ -351,7 +338,7 @@ const AdminDashboard = () => {
                               </p>
                             </div>
                           </div>
-                          <button 
+                          <button
                             onClick={() => updateStatus(leave._id, 'Approved')}
                             className="btn-primary text-xs px-3 py-1.5 rounded-md shrink-0"
                           >
@@ -372,7 +359,7 @@ const AdminDashboard = () => {
                 <div className="card p-5 md:p-6 lg:col-span-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
                     <h3 className="text-base md:text-lg font-semibold text-slate-800 dark:text-white">Employee Task Assignments</h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('Tasks & Reviews')}
                       className="btn-primary text-sm px-4 py-2 rounded-lg self-start"
                     >
@@ -389,11 +376,10 @@ const AdminDashboard = () => {
                               Assigned to: {task.assignedTo?.name || 'Unassigned'} • Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A'}
                             </p>
                           </div>
-                          <span className={`badge shrink-0 ${
-                            task.status?.toLowerCase() === 'completed' ? 'badge-approved' :
-                            task.status?.toLowerCase() === 'in-progress' ? 'badge-present' :
-                            'badge-pending'
-                          }`}>
+                          <span className={`badge shrink-0 ${task.status?.toLowerCase() === 'completed' ? 'badge-approved' :
+                              task.status?.toLowerCase() === 'in-progress' ? 'badge-present' :
+                                'badge-pending'
+                            }`}>
                             {task.status || 'Pending'}
                           </span>
                         </div>
@@ -416,9 +402,9 @@ const AdminDashboard = () => {
         </div>
       </main>
 
-      <AddEmployeeModal 
-        isOpen={isAddEmployeeOpen} 
-        onClose={() => setIsAddEmployeeOpen(false)} 
+      <AddEmployeeModal
+        isOpen={isAddEmployeeOpen}
+        onClose={() => setIsAddEmployeeOpen(false)}
       />
     </div>
   );

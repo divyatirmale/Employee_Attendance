@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
-import axios from 'axios';
+import api from '../utils/axios';
 import {
   Search,
   ChevronDown,
@@ -32,10 +32,7 @@ const EngageView = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/posts', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/posts');
       setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -46,7 +43,6 @@ const EngageView = () => {
 
   const handleCreatePost = async (content, file) => {
     try {
-      const token = localStorage.getItem('token');
       const formData = new FormData();
       formData.append('title', content);
       formData.append('group', 'General');
@@ -54,9 +50,8 @@ const EngageView = () => {
         formData.append('image', file);
       }
 
-      const response = await axios.post('/api/posts', formData, {
+      const response = await api.post('/api/posts', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -70,11 +65,8 @@ const EngageView = () => {
 
   const handleReact = async (postId, reaction) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(`/api/posts/${postId}/react`, {
+      const response = await api.post(`/api/posts/${postId}/react`, {
         reaction
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       setPosts(posts.map(p => p._id === postId ? response.data : p));
@@ -90,11 +82,8 @@ const EngageView = () => {
     if (!text || !text.trim()) return;
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(`/api/posts/${postId}/comment`, {
+      const response = await api.post(`/api/posts/${postId}/comment`, {
         text
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       setPosts(posts.map(p => p._id === postId ? response.data : p));
@@ -133,8 +122,8 @@ const EngageView = () => {
               <button
                 onClick={() => setActivityFilter('all')}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activityFilter === 'all'
-                    ? 'bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400'
-                    : `${dark ? 'text-gray-300 hover:bg-gray-700/50' : 'text-gray-600 hover:bg-gray-100'}`
+                  ? 'bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400'
+                  : `${dark ? 'text-gray-300 hover:bg-gray-700/50' : 'text-gray-600 hover:bg-gray-100'}`
                   }`}
               >
                 <div className={`w-4 h-4 rounded-full border-2 ${activityFilter === 'all' ? 'border-sky-500 bg-sky-500' : 'border-gray-300 dark:border-gray-600'}`} />
@@ -143,8 +132,8 @@ const EngageView = () => {
               <button
                 onClick={() => setActivityFilter('posts')}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activityFilter === 'posts'
-                    ? 'bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400'
-                    : `${dark ? 'text-gray-300 hover:bg-gray-700/50' : 'text-gray-600 hover:bg-gray-100'}`
+                  ? 'bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400'
+                  : `${dark ? 'text-gray-300 hover:bg-gray-700/50' : 'text-gray-600 hover:bg-gray-100'}`
                   }`}
               >
                 <div className={`w-4 h-4 rounded-full border-2 ${activityFilter === 'posts' ? 'border-sky-500 bg-sky-500' : 'border-gray-300 dark:border-gray-600'}`} />
@@ -270,8 +259,8 @@ const EngageView = () => {
                   <button
                     onClick={() => handleReact(post._id, '👍')}
                     className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${post.reactions?.includes('👍')
-                        ? 'bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400'
-                        : `${dark ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-300' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`
+                      ? 'bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400'
+                      : `${dark ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-300' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`
                       }`}
                   >
                     <ThumbsUp size={16} /> Reaction

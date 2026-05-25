@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
 import { ChevronLeft, ChevronRight, Clock, AlertCircle, Loader2 } from 'lucide-react';
@@ -18,12 +18,9 @@ const AttendanceView = () => {
   const fetchAttendance = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const month = currentDate.getMonth() + 1;
       const year = currentDate.getFullYear();
-      const res = await axios.get(`/api/attendance/${user.id}?month=${month}&year=${year}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/api/attendance/${user.id}?month=${month}&year=${year}`);
       if (res.data.success) {
         setAttendance(res.data.attendance);
       }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useTheme } from '../context/ThemeContext';
 import { Plus, X, MoreVertical, MessageSquare, Loader2, Search } from 'lucide-react';
 
@@ -27,10 +27,7 @@ const HelpdeskView = () => {
 
     const fetchTickets = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('/api/tickets', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/api/tickets');
             if (res.data.success) {
                 setTickets(res.data.tickets);
             }
@@ -41,10 +38,7 @@ const HelpdeskView = () => {
 
     const handleUpdateStatus = async (id, status) => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.put(`/api/tickets/${id}`, { status }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.put(`/api/tickets/${id}`, { status });
             fetchTickets();
             setOpenMenuId(null);
         } catch (error) {
@@ -55,10 +49,7 @@ const HelpdeskView = () => {
     const handleDeleteTicket = async (id) => {
         if (!window.confirm("Are you sure you want to delete this ticket?")) return;
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`/api/tickets/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/api/tickets/${id}`);
             fetchTickets();
             setOpenMenuId(null);
         } catch (error) {
@@ -70,10 +61,7 @@ const HelpdeskView = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.post('/api/tickets/add', newTicket, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.post('/api/tickets/add', newTicket);
             if (res.data.success) {
                 setShowModal(false);
                 setNewTicket({ category: '', subject: '', description: '', priority: 'Medium' });

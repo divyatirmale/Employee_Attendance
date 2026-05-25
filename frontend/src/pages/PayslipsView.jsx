@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
 import { Download, ChevronDown, Calendar, CreditCard, ReceiptText, Loader2, Eye, EyeOff } from 'lucide-react';
@@ -19,10 +19,7 @@ const PayslipsView = () => {
 
   const fetchPayslips = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`/api/payslips/employee/${user.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/api/payslips/employee/${user.id}`);
       if (res.data.success) {
         setPayslips(res.data.payslips);
         if (res.data.payslips.length > 0) {

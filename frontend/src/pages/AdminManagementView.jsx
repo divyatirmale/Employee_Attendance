@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { Shield, UserPlus, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -28,10 +28,7 @@ const AdminManagementView = () => {
 
     const fetchAdmins = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('/api/auth/admins', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/api/auth/admins');
             if (res.data.success) {
                 setAdmins(res.data.admins);
             }
@@ -54,10 +51,7 @@ const AdminManagementView = () => {
     const handleCreateAdmin = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.post('/api/auth/register-admin', newAdmin, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.post('/api/auth/register-admin', newAdmin);
             if (res.data.success) {
                 alert("Admin account created successfully!");
                 setIsModalOpen(false);
@@ -194,8 +188,8 @@ const AdminManagementView = () => {
                                             <label
                                                 key={section}
                                                 className={`flex items-center gap-2 px-4 py-3 rounded-lg border-2 cursor-pointer transition-all text-sm font-medium ${newAdmin.permissions.includes(section)
-                                                        ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300'
-                                                        : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
+                                                    ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300'
+                                                    : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
                                                     }`}
                                             >
                                                 <input

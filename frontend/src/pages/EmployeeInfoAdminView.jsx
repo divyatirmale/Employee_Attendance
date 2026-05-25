@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { Search, Save, UserCheck, MapPin, GraduationCap, Briefcase } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -23,10 +23,7 @@ const EmployeeInfoAdminView = () => {
 
   const fetchEmployees = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/auth/employees', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/auth/employees');
       if (res.data.success) {
         setEmployees(res.data.employees);
       }
@@ -39,10 +36,7 @@ const EmployeeInfoAdminView = () => {
 
   const fetchEmployeeInfo = async (empId) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`/api/employee-info/${empId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/api/employee-info/${empId}`);
       if (res.data.success && res.data.info) {
         setFormData(res.data.info);
       } else {
@@ -76,12 +70,9 @@ const EmployeeInfoAdminView = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post('/api/employee-info/upsert', {
+      const res = await api.post('/api/employee-info/upsert', {
         ...formData,
         employeeId: selectedEmployee._id || selectedEmployee.id
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (res.data.success) {
@@ -130,8 +121,8 @@ const EmployeeInfoAdminView = () => {
                 key={emp.id || emp._id}
                 onClick={() => handleSelectEmployee(emp)}
                 className={`flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors ${(selectedEmployee?.id || selectedEmployee?._id) === (emp.id || emp._id)
-                    ? 'bg-sky-50 dark:bg-sky-900/20 border-l-[3px] border-l-sky-500'
-                    : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 border-l-[3px] border-l-transparent'
+                  ? 'bg-sky-50 dark:bg-sky-900/20 border-l-[3px] border-l-sky-500'
+                  : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 border-l-[3px] border-l-transparent'
                   }`}
               >
                 <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 flex items-center justify-center text-sm font-semibold flex-shrink-0">
@@ -170,9 +161,8 @@ const EmployeeInfoAdminView = () => {
                         const fd = new FormData();
                         fd.append('image', e.target.files[0]);
                         try {
-                          const token = localStorage.getItem('token');
-                          const res = await axios.post(`/api/auth/upload-image/${selectedEmployee._id || selectedEmployee.id}`, fd, {
-                            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+                          const res = await api.post(`/api/auth/upload-image/${selectedEmployee._id || selectedEmployee.id}`, fd, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
                           });
                           if (res.data.success) {
                             setSelectedEmployee(res.data.user);

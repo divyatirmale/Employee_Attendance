@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useTheme } from '../context/ThemeContext';
 import { CheckCircle, Clock, AlertCircle, User, MessageSquare, Loader2 } from 'lucide-react';
 
@@ -14,10 +14,7 @@ const HelpdeskAdminView = () => {
 
     const fetchTickets = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('/api/tickets', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/api/tickets');
             if (res.data.success) {
                 setTickets(res.data.tickets);
             }
@@ -30,10 +27,7 @@ const HelpdeskAdminView = () => {
 
     const updateStatus = async (id, status) => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.put(`/api/tickets/${id}`, { status }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.put(`/api/tickets/${id}`, { status });
             if (res.data.success) {
                 fetchTickets();
             }

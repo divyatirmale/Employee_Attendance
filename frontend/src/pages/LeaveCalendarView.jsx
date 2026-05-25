@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useTheme } from '../context/ThemeContext';
 import { ChevronLeft, ChevronRight, Search, User, Loader2 } from 'lucide-react';
 
@@ -18,10 +18,7 @@ const LeaveCalendarView = () => {
     const fetchLeaves = async () => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get('/api/leaves', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/api/leaves');
             if (res.data.success) {
                 setLeaves(res.data.leaves);
             }

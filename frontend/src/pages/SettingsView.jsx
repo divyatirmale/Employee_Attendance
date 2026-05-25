@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import { useAuth } from '../context/authcontext';
 import { useTheme } from '../context/ThemeContext';
 import { User, Settings, Lock, Edit2, Info, Eye, EyeOff, Save, X, ArrowLeft } from 'lucide-react';
@@ -46,12 +46,9 @@ const SettingsView = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post('/api/auth/change-password', {
+      const res = await api.post('/api/auth/change-password', {
         oldPassword: passwords.old,
         newPassword: passwords.new
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (res.data.success) {
@@ -66,10 +63,7 @@ const SettingsView = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.put(`/api/auth/update-profile/${user.id || user._id}`, profileData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.put(`/api/auth/update-profile/${user.id || user._id}`, profileData);
 
       if (res.data.success) {
         login(res.data.user);
@@ -120,8 +114,8 @@ const SettingsView = () => {
 
       {message.text && view === 'main' && (
         <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${message.type === 'success'
-            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-            : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+          : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
           }`}>
           {message.text}
         </div>
@@ -282,8 +276,8 @@ const SettingsView = () => {
         <form onSubmit={handleChangePassword}>
           {message.text && (
             <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${message.type === 'success'
-                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+              : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
               }`}>
               {message.text}
             </div>

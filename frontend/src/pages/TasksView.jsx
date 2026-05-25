@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/axios';
 import {
   Plus,
   Search,
@@ -41,10 +41,7 @@ const TasksView = ({ userRole }) => {
 
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/tasks', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/tasks');
       if (res.data.success) {
         setTasks(res.data.tasks);
       }
@@ -57,10 +54,7 @@ const TasksView = ({ userRole }) => {
 
   const fetchEmployees = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('/api/auth/employees', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get('/api/auth/employees');
       if (res.data.success) {
         setEmployees(res.data.employees);
       }
@@ -112,10 +106,7 @@ const TasksView = ({ userRole }) => {
 
   const updateStatus = async (id, status) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.put(`/api/tasks/${id}`, { status }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.put(`/api/tasks/${id}`, { status });
       if (res.data.success) {
         setTasks(tasks.map(t => t._id === id ? { ...t, status } : t));
       }
@@ -127,10 +118,7 @@ const TasksView = ({ userRole }) => {
   const deleteTask = async (id) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.delete(`/api/tasks/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.delete(`/api/tasks/${id}`);
       if (res.data.success) {
         setTasks(tasks.filter(t => t._id !== id));
       }
@@ -180,8 +168,8 @@ const TasksView = ({ userRole }) => {
           <button
             onClick={() => setActiveTab('Tasks')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'Tasks'
-                ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+              ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
           >
             Tasks
@@ -189,8 +177,8 @@ const TasksView = ({ userRole }) => {
           <button
             onClick={() => setActiveTab('Review')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'Review'
-                ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+              ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
           >
             Review
@@ -279,7 +267,7 @@ const TasksView = ({ userRole }) => {
                     )}
                     <td>
                       <span className={`badge text-xs ${task.priority === 'High' ? 'badge-danger' :
-                          task.priority === 'Medium' ? 'badge-warning' : 'badge'
+                        task.priority === 'Medium' ? 'badge-warning' : 'badge'
                         }`}>
                         {task.priority}
                       </span>
@@ -388,8 +376,8 @@ const TasksView = ({ userRole }) => {
                     <label
                       key={p}
                       className={`flex-1 px-4 py-2.5 rounded-lg border-2 cursor-pointer text-center text-sm font-medium transition-all ${newTask.priority === p
-                          ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300'
-                          : 'border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
+                        ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300'
+                        : 'border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
                         }`}
                     >
                       <input
