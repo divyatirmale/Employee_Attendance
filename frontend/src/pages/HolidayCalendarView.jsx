@@ -12,7 +12,7 @@ const HolidayCalendarView = () => {
 
     const holidays = {
         "JAN": [
-            { date: "14 Wed", name: "Uttarayan" },
+            { date: "14 Wed", name: "Uttarayan" },git push -u origin main --force
             { date: "15 Thu", name: "Compensatory Off (Independence Day)" },
             { date: "26 Mon", name: "Republic Day" }
         ],
